@@ -13,13 +13,32 @@ async function submitDailyJournal(formUrl, message) {
   // slowMo adds a slight delay to each action so you can see it happen.
   // Dynamically find Chrome path based on Windows, Mac, or Linux
   const os = require('os');
+  const fs = require('fs');
+  
   let chromePath = '';
   if (os.platform() === 'win32') {
-    chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    // Check both standard local and x86 program files for Chrome
+    const winPath1 = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    const winPath2 = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+    chromePath = fs.existsSync(winPath1) ? winPath1 : winPath2;
   } else if (os.platform() === 'darwin') {
     chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
   } else {
-    chromePath = '/usr/bin/google-chrome'; // Linux default
+    // Linux varies heavily. Scan for the most common Linux binary locations natively.
+    const linuxPaths = [
+      '/usr/bin/google-chrome-stable',
+      '/usr/bin/google-chrome',
+      '/usr/bin/chromium-browser',
+      '/usr/bin/chromium'
+    ];
+    for (const p of linuxPaths) {
+      if (fs.existsSync(p)) {
+        chromePath = p;
+        break;
+      }
+    }
+    // Fallback if none exist on the standard root
+    if (!chromePath) chromePath = '/usr/bin/google-chrome';
   }
 
   const browser = await puppeteer.launch({ 

@@ -55,10 +55,19 @@ if (platform === 'win32') {
     fs.chmodSync(desktopShortcut, 0o755); // make executable
     console.log(`✅ Created Mac Desktop App: ${desktopShortcut}`);
   } else {
-    const desktopShortcut = path.join(desktopDir, 'Run EasyLife.sh');
-    fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm start\n`);
-    fs.chmodSync(desktopShortcut, 0o755);
-    console.log(`✅ Created Linux Desktop Script: ${desktopShortcut}`);
+    // True Linux Native Desktop Application Spec Instead of just a loose sh script
+    const desktopShortcut = path.join(desktopDir, 'EasyLife.desktop');
+    const desktopContent = `[Desktop Entry]
+Name=EasyLife
+Comment=Run EasyLife Automation
+Exec=bash -c 'cd "${__dirname}" && npm start; exec bash'
+Icon=utilities-terminal
+Terminal=true
+Type=Application
+Categories=Utility;`;
+    fs.writeFileSync(desktopShortcut, desktopContent);
+    fs.chmodSync(desktopShortcut, 0o755); // Marks .desktop as executable and "trusted" on most modern distros
+    console.log(`✅ Created Linux Desktop Entry: ${desktopShortcut}`);
   }
 }
 
