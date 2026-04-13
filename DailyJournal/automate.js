@@ -6,9 +6,10 @@ puppeteer.use(StealthPlugin());
  * Automates the submission of a Google Form.
  * @param {string} formUrl - The URL of the Google Form snippet/document.
  * @param {string} message - The daily update text to input.
+ * @param {string} email - The dynamic Kalvium email to sign in with.
  */
-async function submitDailyJournal(formUrl, message) {
-  console.log('Launching browser...');
+async function submitDailyJournal(formUrl, message, email) {
+  console.log(`Launching browser for ${email}...`);
   // headless: false makes the browser visible. 
   // slowMo adds a slight delay to each action so you can see it happen.
   const browser = await puppeteer.launch({ 
@@ -22,36 +23,47 @@ async function submitDailyJournal(formUrl, message) {
   });
   
   try {
-    const page = await browser.newPage();
+    // Instead of opening a new tab, grab the first default tab Chrome opened
+    const pages = await browser.pages();
+    const page = pages.length > 0 ? pages[0] : await browser.newPage();
     
-    // First, let's check if you are logged into Google at all in this local profile
-    console.log('Checking Kalvium Google Account connection...');
-    await page.goto('https://accounts.google.com/signin/v2/identifier?hl=en&flowName=GlifWebSignIn&flowEntry=ServiceLogin', { waitUntil: 'networkidle2' });
-    
-    // If the URL is still on the sign-in page, we automatically enter the Kalvium email
-    if (page.url().includes('signin') || page.url().includes('identifier')) {
-      console.log('Automating Kalvium sign-in process...');
-      
-      try {
-        // Wait for the email input and type the kalvium ID
-        await page.waitForSelector('input[type="email"]', { timeout: 5000 });
-        // NOTE: You can change this to your exact email below!
-        await page.type('input[type="email"]', 'your.name@kalvium.community');
-        await page.keyboard.press('Enter');
-        
-        console.log('Please enter your password manually in the Chrome window.');
-      } catch (err) {
-        console.log('Already past the email stage or already logged in.');
-      }
-
-      console.log('Waiting up to 5 minutes for you to complete sign in...');
-      // Wait until the URL changes to Google myaccount or the Google Form indicating success
-      await page.waitForNavigation({ timeout: 300000 }); 
-      console.log('Sign-in successful! Proceeding to the Google Form...');
-    }
-
+    // Navigate directly to your daily journal form
     console.log(`Navigating to ${formUrl}...`);
     await page.goto(formUrl, { waitUntil: 'networkidle2' });
+    
+    // If Google Forms forces a login, it immediately redirects you to its Sign-In page.
+    if (page.url().includes('signin') || page.url().includes('identifier') || page.url().includes('ServiceLogin')) {
+      console.log('You are not logged into your Kalvium account! Automating sign-in process...');
+      
+      try {
+        // Wait for the email input and type the Kalvium ID dynamically created in the frontend
+        await page.waitForSelector('input[type="email"]', { timeout: 5000 });
+        await page.type('input[type="email"]', email);
+        await page.keyboard.press('Enter');
+        
+        console.log('Email entered. Please enter your password manually in the Chrome window.');
+      } catch (err) {
+        console.log('Could not automatically type email. You may be on an account selection screen.');
+      }
+
+      console.log('Waiting up to 5 minutes for you to complete your password sign-in...');
+      
+      // Halts the script and only continues when Google automatically shifts the URL back away from the login page!
+      await page.waitForFunction(
+        () => !window.location.href.includes('signin') && !window.location.href.includes('identifier') && !window.location.href.includes('ServiceLogin'),
+        { timeout: 300000 } // 5 Minutes
+      );
+      
+      console.log('Sign-in successful!');
+
+      // Since sign-in redirects to the form natively, just verify we actually got there, otherwise manually route back.
+      if (!page.url().includes('docs.google.com/forms')) {
+        console.log('Redirecting back to the Daily Journal form...');
+        await page.goto(formUrl, { waitUntil: 'networkidle2' });
+      }
+    } else {
+      console.log('Already logged into Kalvium! Bypassing sign-in and proceeding directly to the form...');
+    }
 
     // Example interaction: Wait for a specific input field
     // Note: Google Forms input selectors vary, you need to inspect your specific form and get the textarea/input selector.
