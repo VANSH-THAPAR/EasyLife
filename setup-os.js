@@ -20,6 +20,9 @@ if (platform === 'win32') {
   console.log(`\n✅ Created Windows CLI Command: ${userRootBat}`);
 
   // Create a Desktop Shortcut (Batch file)
+  if (!fs.existsSync(desktopDir)) {
+    fs.mkdirSync(desktopDir, { recursive: true });
+  }
   const desktopShortcut = path.join(desktopDir, 'Run EasyLife.bat');
   const shortcutContent = `@echo off\r\ncd /d "${__dirname}"\r\nnpm start\r\npause`;
   fs.writeFileSync(desktopShortcut, shortcutContent);
@@ -42,6 +45,10 @@ if (platform === 'win32') {
   }
 
   // Create a Desktop Executable (.command for Mac, .desktop for Linux)
+  if (!fs.existsSync(desktopDir)) {
+    fs.mkdirSync(desktopDir, { recursive: true });
+  }
+  
   if (platform === 'darwin') {
     const desktopShortcut = path.join(desktopDir, 'Run EasyLife.command');
     fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm start\n`);
