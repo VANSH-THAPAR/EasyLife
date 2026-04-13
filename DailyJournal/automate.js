@@ -80,10 +80,10 @@ async function submitDailyJournal(formUrl, message) {
     });
 
     if (clearFormButton && await clearFormButton.asElement()) {
-      await clearFormButton.asElement().click();
+      await page.evaluate(el => el.click(), clearFormButton);
       console.log('Clicked "Clear form". Waiting for confirmation dialog...');
       
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1500));
       
       // Click the confirmation "Clear form" in the modal dialog
       const confirmClearButton = await page.evaluateHandle(() => {
@@ -104,7 +104,7 @@ async function submitDailyJournal(formUrl, message) {
       });
       
       if (confirmClearButton && await confirmClearButton.asElement()) {
-         await confirmClearButton.asElement().click();
+         await page.evaluate(el => el.click(), confirmClearButton);
          console.log('Form cleared successfully!');
       }
       // Give it extra time to reload/reset the DOM
