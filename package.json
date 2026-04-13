@@ -7,10 +7,9 @@
   },
   "main": "index.js",
   "scripts": {
+    "start": "node start.js",
+    "postinstall": "cd DailyJournal && npm install",
     "install-os": "node setup-os.js",
-    "build": "cd Frontend && npm install && npm run build",
-    "start": "cd DailyJournal && npm install && node server.js",
-    "setup-start": "npm run build && npm start",
     "vansh": "node ./bin/vansh.js"
   },
   "repository": {

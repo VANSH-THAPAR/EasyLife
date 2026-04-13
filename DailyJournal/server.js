@@ -13,14 +13,14 @@ app.use(express.json());
 
 // API Endpoint to trigger automation
 app.post('/api/trigger-journal', async (req, res) => {
-  const { formUrl, message, email } = req.body;
+  const { formUrl, message } = req.body;
 
-  if (!formUrl || !message || !email) {
-    return res.status(400).json({ success: false, message: 'Missing formUrl, message, or email.' });
+  if (!formUrl || !message) {
+    return res.status(400).json({ success: false, message: 'Missing formUrl or message.' });
   }
 
   try {
-    const result = await submitDailyJournal(formUrl, message, email);
+    const result = await submitDailyJournal(formUrl, message);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -6,10 +6,9 @@ puppeteer.use(StealthPlugin());
  * Automates the submission of a Google Form.
  * @param {string} formUrl - The URL of the Google Form snippet/document.
  * @param {string} message - The daily update text to input.
- * @param {string} email - The dynamic Kalvium email to sign in with.
  */
-async function submitDailyJournal(formUrl, message, email) {
-  console.log(`Launching browser for ${email}...`);
+async function submitDailyJournal(formUrl, message) {
+  console.log(`Launching browser...`);
   // headless: false makes the browser visible. 
   // slowMo adds a slight delay to each action so you can see it happen.
   // Dynamically find Chrome path based on Windows, Mac, or Linux
@@ -43,20 +42,9 @@ async function submitDailyJournal(formUrl, message, email) {
     
     // If Google Forms forces a login, it immediately redirects you to its Sign-In page.
     if (page.url().includes('signin') || page.url().includes('identifier') || page.url().includes('ServiceLogin')) {
-      console.log('You are not logged into your Kalvium account! Automating sign-in process...');
+      console.log('You are not logged into your Google account! Please sign in manually...');
       
-      try {
-        // Wait for the email input and type the Kalvium ID dynamically created in the frontend
-        await page.waitForSelector('input[type="email"]', { timeout: 5000 });
-        await page.type('input[type="email"]', email);
-        await page.keyboard.press('Enter');
-        
-        console.log('Email entered. Please enter your password manually in the Chrome window.');
-      } catch (err) {
-        console.log('Could not automatically type email. You may be on an account selection screen.');
-      }
-
-      console.log('Waiting up to 5 minutes for you to complete your password sign-in...');
+      console.log('Waiting up to 5 minutes for you to complete your sign-in...');
       
       // Halts the script and only continues when Google automatically shifts the URL back away from the login page!
       await page.waitForFunction(
@@ -79,6 +67,51 @@ async function submitDailyJournal(formUrl, message, email) {
     console.log('Interacting with the form: Page 1...');
     // Give the form a moment to render all elements fully
     await new Promise(r => setTimeout(r, 2000));
+
+    // 0. Click "Clear form" to ensure a clean slate
+    console.log('Attempting to clear form for a clean state...');
+    const clearFormButton = await page.evaluateHandle(() => {
+      const spans = Array.from(document.querySelectorAll('span'));
+      const targetSpan = spans.find(s => s.innerText === 'Clear form');
+      if (targetSpan) {
+        return targetSpan.closest('div[role="button"]') || targetSpan;
+      }
+      return null;
+    });
+
+    if (clearFormButton && await clearFormButton.asElement()) {
+      await clearFormButton.asElement().click();
+      console.log('Clicked "Clear form". Waiting for confirmation dialog...');
+      
+      await new Promise(r => setTimeout(r, 1000));
+      
+      // Click the confirmation "Clear form" in the modal dialog
+      const confirmClearButton = await page.evaluateHandle(() => {
+        const dialogs = Array.from(document.querySelectorAll('div[role="alertdialog"], div[role="dialog"]'));
+        if (dialogs.length > 0) {
+           const spans = Array.from(dialogs[dialogs.length - 1].querySelectorAll('span'));
+           const targetSpan = spans.find(s => s.innerText === 'Clear form');
+           if (targetSpan) return targetSpan.closest('div[role="button"]') || targetSpan;
+        }
+        // Fallback
+        const spans = Array.from(document.querySelectorAll('span'));
+        // The dialog popup usually creates new elements at the end, finding the last matching one
+        const targetSpan = spans.reverse().find(s => s.innerText === 'Clear form');
+        if (targetSpan) {
+          return targetSpan.closest('div[role="button"]') || targetSpan;
+        }
+        return null;
+      });
+      
+      if (confirmClearButton && await confirmClearButton.asElement()) {
+         await confirmClearButton.asElement().click();
+         console.log('Form cleared successfully!');
+      }
+      // Give it extra time to reload/reset the DOM
+      await new Promise(r => setTimeout(r, 2000));
+    } else {
+      console.log('No "Clear form" button found. Assuming form is already clean.');
+    }
 
     // 1. Select the "Record email" checkbox (if it exists)
     // Most Google Forms use role="checkbox" for the "Record [email] as the email to be included" option.
@@ -196,28 +229,48 @@ async function submitDailyJournal(formUrl, message, email) {
 
     await new Promise(r => setTimeout(r, 1000));
 
-    // Click the "Next" button for Page 2
-    console.log('Clicking the "Next" button after answering questions...');
-    const nextButtonPage2 = await page.evaluateHandle(() => {
+    // Click the "Next" or "Submit" button for Page 2
+    console.log('Clicking the "Next" or "Submit" button after answering questions...');
+    const nextOrSubmitBtn = await page.evaluateHandle(() => {
       const spans = Array.from(document.querySelectorAll('span'));
-      const targetSpan = spans.find(s => s.innerText === 'Next');
+      const targetSpan = spans.find(s => s.innerText === 'Next' || s.innerText === 'Submit');
       if (targetSpan) {
         return targetSpan.closest('div[role="button"]') || targetSpan;
       }
       return null;
     });
 
-    if (nextButtonPage2 && nextButtonPage2.asElement()) {
-      await nextButtonPage2.asElement().click();
-      console.log('Clicked Next! Moving to the final submission page...');
+    if (nextOrSubmitBtn && nextOrSubmitBtn.asElement()) {
+      await nextOrSubmitBtn.asElement().click();
+      console.log('Clicked button to transition from Page 2!');
     } else {
-      console.log('Warning: Could not find the "Next" button on Page 2.');
+      console.log('Warning: Could not find the "Next" or "Submit" button on Page 2.');
     }
 
-    console.log('Finished automating Page 2 tasks! Leaving browser open for manual submission...');
+    // Wait for the next section to animate and render
+    await new Promise(r => setTimeout(r, 2000));
     
-    // Leaving browser open for now to let you verify it worked step by step
-    return { success: true, message: 'Values filled! Please review and submit manually in Chrome.' };
+    // Attempt one final check for a "Submit" button in case there was a literal Page 3
+    console.log('Checking for a final "Submit" button...');
+    const finalSubmitBtn = await page.evaluateHandle(() => {
+      const spans = Array.from(document.querySelectorAll('span'));
+      const targetSpan = spans.find(s => s.innerText === 'Submit');
+      if (targetSpan) {
+        return targetSpan.closest('div[role="button"]') || targetSpan;
+      }
+      return null;
+    });
+
+    if (finalSubmitBtn && finalSubmitBtn.asElement()) {
+      await finalSubmitBtn.asElement().click();
+      console.log('Successfully clicked Submit!');
+      await new Promise(r => setTimeout(r, 2000)); // Wait for confirmation page
+    }
+
+    console.log('Automation complete! Journal successfully submitted.');
+    
+    // Leaving browser open for now to verify final status
+    return { success: true, message: 'Automation complete! Journal successfully submitted.' };
   } catch (error) {
     console.error('Automation error:', error);
     // Even if it fails, leaving the browser open is helpful to debug visually

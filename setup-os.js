@@ -21,7 +21,7 @@ if (platform === 'win32') {
 
   // Create a Desktop Shortcut (Batch file)
   const desktopShortcut = path.join(desktopDir, 'Run EasyLife.bat');
-  const shortcutContent = `@echo off\r\ncd /d "${__dirname}"\r\nnpm run setup-start\r\npause`;
+  const shortcutContent = `@echo off\r\ncd /d "${__dirname}"\r\nnpm start\r\npause`;
   fs.writeFileSync(desktopShortcut, shortcutContent);
   console.log(`✅ Created Windows Desktop Shortcut: ${desktopShortcut}`);
 
@@ -44,12 +44,12 @@ if (platform === 'win32') {
   // Create a Desktop Executable (.command for Mac, .desktop for Linux)
   if (platform === 'darwin') {
     const desktopShortcut = path.join(desktopDir, 'Run EasyLife.command');
-    fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm run setup-start\n`);
+    fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm start\n`);
     fs.chmodSync(desktopShortcut, 0o755); // make executable
     console.log(`✅ Created Mac Desktop App: ${desktopShortcut}`);
   } else {
     const desktopShortcut = path.join(desktopDir, 'Run EasyLife.sh');
-    fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm run setup-start\n`);
+    fs.writeFileSync(desktopShortcut, `#!/bin/bash\ncd "${__dirname}"\nnpm start\n`);
     fs.chmodSync(desktopShortcut, 0o755);
     console.log(`✅ Created Linux Desktop Script: ${desktopShortcut}`);
   }
