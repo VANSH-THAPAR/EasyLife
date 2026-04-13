@@ -10,3 +10,6 @@ pnpm-debug.log*
 
 # Puppeteer downloads
 .local-chromium/
+
+# Chrome Profile Data (Keeps your kalvium.community sign-in secure)
+chrome_profile/
