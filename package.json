@@ -2,9 +2,16 @@
   "name": "easylife",
   "version": "1.0.0",
   "description": "In this repo i will be building agents that will easy your life by doing the boaring online task",
+  "bin": {
+    "vansh": "./bin/vansh.js"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-os": "node setup-os.js",
+    "build": "cd Frontend && npm install && npm run build",
+    "start": "cd DailyJournal && npm install && node server.js",
+    "setup-start": "npm run build && npm start",
+    "vansh": "node ./bin/vansh.js"
   },
   "repository": {
     "type": "git",

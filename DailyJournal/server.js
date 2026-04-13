@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { submitDailyJournal } = require('./automate');
 
 const app = express();
@@ -26,6 +27,16 @@ app.post('/api/trigger-journal', async (req, res) => {
   }
 });
 
+// --- SERVING THE REACT FRONTEND NATIVELY ---
+// Serve the static files built by Vite
+app.use(express.static(path.join(__dirname, '../Frontend/dist')));
+
+// Catch-all route to serve React's index.html for any other requests (React Router support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend/dist', 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`DailyJournal Automation Server running on http://localhost:${PORT}`);
+  console.log(`EasyLife app running!`);
+  console.log(`--> Visit http://localhost:${PORT} in your browser.`);
 });

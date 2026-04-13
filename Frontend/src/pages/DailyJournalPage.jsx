@@ -21,7 +21,8 @@ export default function DailyJournalPage() {
     setLog(`Initializing headless browser for ${emailId}...`);
     
     try {
-      const response = await fetch('http://localhost:3001/api/trigger-journal', {
+      // Switched from "http://localhost:3001" to purely relative "/" to work beautifully on the bundled unified server.
+      const response = await fetch('/api/trigger-journal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
