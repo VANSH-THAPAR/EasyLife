@@ -12,7 +12,7 @@ export default function Dashboard() {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">EasyLife Dashboard</h1>
         <p className="text-neutral-400 mb-10">Manage your personal automation pipeline.</p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tasks.map((task) => (
             <div key={task.id} className="border border-neutral-800 bg-neutral-900 rounded-xl p-6 transition-all hover:border-neutral-700 hover:bg-neutral-800">
