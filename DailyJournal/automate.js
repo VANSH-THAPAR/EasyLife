@@ -191,22 +191,59 @@ async function submitDailyJournal(formUrl, message) {
     // Wait for the next section to animate and render
     await new Promise(r => setTimeout(r, 2500));
 
+    const csTasks = [
+      "Graph algorithms", "Dynamic programming", "Trees and Tries", "Backtracking and Recursion",
+      "Sorting and Searching algorithms", "Linked Lists and manipulating pointers", "Heaps and Priority Queues",
+      "Hash Tables and Maps", "String manipulation algorithms", "Bit manipulation tricks", "Greedy algorithms",
+      "System Design principles", "Rest API design and implementation", "Database schema normalization",
+      "SQL complex queries optimization", "NoSQL aggregation pipelines", "Caching strategies with Redis",
+      "Microservices architecture patterns", "Message queues (Kafka, RabbitMQ)", "WebSockets for real-time communication",
+      "Docker containerization", "Kubernetes orchestration basics", "CI/CD pipeline setup with GitHub Actions",
+      "React components and hooks", "State management with Redux", "Next.js server-side rendering",
+      "Node.js event loop understanding", "Express.js middleware authoring", "Authentication with JWT",
+      "OAuth2 integration", "Web security (XSS, CSRF mitigation)", "Unit testing with Jest",
+      "E2E testing with Cypress or Playwright", "Typescript interfaces and generics", "Python Pandas for data manipulation",
+      "Machine learning basics with Scikit-learn", "Neural networks with TensorFlow", "Computer vision with OpenCV",
+      "Natural language processing with NLTK", "AWS fundamental services (EC2, S3)", "Serverless functions (AWS Lambda)",
+      "GCP Firebase integration", "Azure DevOps workflows", "Linux shell scripting", "Git advanced workflows (rebase, cherry-pick)",
+      "WebRTC protocol", "GraphQL server setup", "Deno framework exploration", "Rust server development",
+      "Go language memory management", "Web frameworks comparison (Vue vs React)", "CSS Flexbox and Grid layouts",
+      "Tailwind CSS styling", "Web performance optimization (Lazy loading)", "SEO best practices",
+      "Progressive Web Apps (PWA)", "Service Workers implementation", "Browser rendering engine study",
+      "TCP/IP layer protocols", "HTTP/2 and HTTP/3 enhancements", "Sockets programming in C",
+      "Memory allocation in C/C++", "Object-oriented design patterns", "Functional programming paradigms",
+      "Event-driven architecture", "SOLID design principles", "Clean Architecture implementation",
+      "TDD (Test-Driven Development)", "BDD (Behavior-Driven Development)", "Agile/Scrum methodology",
+      "Code review best practices", "Memory profiling and leak detection", "Multithreading and concurrency",
+      "Asynchronous programming patterns", "Deadlock prevention strategies", "Operating System process scheduling",
+      "Virtual memory structures", "File system implementation basics", "Compiler design basics (Lexical analysis)",
+      "AST (Abstract Syntax Tree) manipulation", "Game development basics (Unity)", "Physics engines in game dev",
+      "Blockchain fundamentals", "Smart contracts with Solidity", "Web3.js interactions", "Cryptography basics (RSA, AES)",
+      "Hashing algorithms (SHA-256)", "Public Key Infrastructure (PKI)", "Penetration testing basics",
+      "Ethical hacking and recon", "OWASP top 10 vulnerabilities", "MapReduce paradigm", "Hadoop ecosystem review",
+      "Apache Spark data processing", "Distributed tracing and logging", "Data warehousing structures",
+      "ETL pipeline building", "Data visualization with D3.js", "Mobile app dev with React Native", "Flutter cross-platform dev"
+    ];
+    
+    // Pick a random task
+    const randomTask = csTasks[Math.floor(Math.random() * csTasks.length)];
+
     const formAnswers = [
       { 
         question: 'What were your key tasks for the day?', 
-        answer: 'i did dsa today' 
+        answer: `I practiced and studied ${randomTask} today.` 
       },
       { 
         question: 'What challenges/problems did you solve today?', 
-        answer: 'i solved trees and dp questions' 
+        answer: `I solved various implementations and scenarios related to ${randomTask}.` 
       },
       { 
         question: 'What challenges/problems you were NOT able to solve today', 
-        answer: 'i solved all the challanges' 
+        answer: 'I was able to solve most of the major challenges.' 
       },
       { 
         question: 'What is your plan for the next day of Simulated Work?', 
-        answer: 'i will master trees and dp' 
+        answer: `I will review ${randomTask} and jump to the next topic.` 
       }
     ];
 
