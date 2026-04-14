@@ -1,4 +1,33 @@
 import { useState } from 'react';
+import { Play, SquareTerminal, HardDrive, Network, Globe, Copy, Check } from 'lucide-react';
+
+const CodeSnippet = ({ code, className = "" }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className={`relative group border border-[#333] bg-[#050505] ${className}`}>
+      <div className="flex justify-between items-center px-4 py-2 border-b border-[#222] bg-[#0a0a0a]">
+        <span className="text-[10px] uppercase text-neutral-500 tracking-widest">bash</span>
+        <button 
+          onClick={handleCopy}
+          className="text-neutral-500 hover:text-orange-500 transition-colors flex items-center gap-1 text-[10px] uppercase tracking-widest"
+        >
+          {copied ? <Check size={12} /> : <Copy size={12} />}
+          {copied ? 'COPIED' : 'COPY'}
+        </button>
+      </div>
+      <pre className="text-orange-400 p-4 overflow-x-auto text-[11px] leading-relaxed">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+};
 
 export default function DailyJournalPage() {
   const [status, setStatus] = useState('idle');
@@ -6,10 +35,9 @@ export default function DailyJournalPage() {
 
   const handleTrigger = async () => {
     setStatus('running');
-    setLog(`Initializing headless browser for manual login...`);
-    
+    setLog(`[SYS] EXECUTING HEADLESS INJECTION...`);
+
     try {
-      // Switched from "http://localhost:3001" to purely relative "/" to work beautifully on the bundled unified server.
       const response = await fetch('/api/trigger-journal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -22,85 +50,108 @@ export default function DailyJournalPage() {
       const data = await response.json();
       if (response.ok) {
         setStatus('success');
-        setLog(`Success: ${data.message}`);
+        setLog(`[OK] PAYLOAD DELIVERED. RES: ${data.message}`);
       } else {
-        throw new Error(data.message || 'Automation failed');
+        throw new Error(data.message || 'PROCESS FAILED');
       }
     } catch (error) {
       setStatus('error');
-      setLog(`Error: ${error.message}`);
+      setLog(`[ERR] ${error.message.toUpperCase()}`);
     }
   };
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-50 p-10">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">Daily Journal Auto-Submit</h1>
-        <p className="text-neutral-400 mb-8">Click the button below to start the automation. Standard Google login will be prompted if required.</p>
-        
-        <div className="mb-8 bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <h2 className="text-2xl font-bold mb-6 text-white border-b border-neutral-700 pb-2">EasyLife Setup & Usage Guide 🚀</h2>
-          
-          <div className="space-y-6 text-neutral-300">
-            <section>
-              <h3 className="text-xl font-semibold mb-2 text-white">1. Requirements</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li><strong>Node.js</strong> (v18 or above recommended)</li>
-                <li><strong>Google Chrome</strong> browser (used natively, make sure to close all instances before running)</li>
-                <li><strong>Git</strong> (for cloning)</li>
-              </ul>
-            </section>
-
-            <section>
-              <h3 className="text-xl font-semibold mb-2 text-white">2. Installation 🛠️</h3>
-              <p className="mb-2 text-sm text-neutral-400">Run the following in your terminal based on your OS:</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-black p-4 rounded-lg border border-neutral-800">
-                  <h4 className="text-white font-medium mb-2 text-sm">Windows</h4>
-                  <pre className="text-green-400 text-xs overflow-x-auto"><code>git clone https://github.com/VANSH-THAPAR/EasyLife.git
-cd EasyLife
-npm install
-npm run install-os</code></pre>
-                  <p className="text-xs text-neutral-500 mt-2 italic">Creates a global <code>vansh</code> CLI and Desktop shortcut.</p>
-                </div>
-                
-                <div className="bg-black p-4 rounded-lg border border-neutral-800">
-                  <h4 className="text-white font-medium mb-2 text-sm">macOS / Linux</h4>
-                  <pre className="text-green-400 text-xs overflow-x-auto"><code>git clone https://github.com/VANSH-THAPAR/EasyLife.git
-cd EasyLife
-npm install
-npm run install-os</code></pre>
-                  <p className="text-xs text-neutral-500 mt-2 italic">Run <code>source ~/.zshrc</code> (or bashrc) after to load the alias.</p>
+    <div className="p-8 max-w-5xl mx-auto font-mono text-neutral-300">
+      <div className="mb-10 flex flex-col gap-2">
+        <h1 className="text-2xl font-bold text-white uppercase tracking-widest flex items-center gap-3">
+          <SquareTerminal className="text-orange-500" size={24} />
+          Daily_Journal.sh
+        </h1>
+        <p className="text-neutral-500 text-xs tracking-wide">
+          // AUTONOMOUS CHROMIUM INSTANCE :: FORM INJECTION MODULE
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="border border-[#222] bg-[#050505] p-6 relative">
+            <div className="absolute top-0 left-0 bg-orange-500 text-black text-[9px] px-2 font-bold tracking-widest">DOCS</div>
+            
+            <div className="mt-4 space-y-6">
+              <div>
+                <h3 className="text-xs text-orange-500 mb-3 tracking-widest flex items-center gap-2">
+                  <span className="text-neutral-600">01 /</span> REQUISITES
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
+                    <Network size={14} className="text-neutral-500 mb-2" />
+                    <div className="text-xs text-white">Node.js</div>
+                    <div className="text-[10px] text-neutral-600">v18.0.0+</div>
+                  </div>
+                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
+                    <Globe size={14} className="text-neutral-500 mb-2" />
+                    <div className="text-xs text-white">Chrome</div>
+                    <div className="text-[10px] text-neutral-600">Terminate bounds</div>
+                  </div>
+                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
+                    <HardDrive size={14} className="text-neutral-500 mb-2" />
+                    <div className="text-xs text-white">Git</div>
+                    <div className="text-[10px] text-neutral-600">Source control</div>
+                  </div>
                 </div>
               </div>
-            </section>
 
-            <section>
-              <h3 className="text-xl font-semibold mb-2 text-white">3. Run Automation Anytime 🤖</h3>
-              <p className="mb-2">Once setup is complete, you can trigger the journal from anywhere directly in your terminal:</p>
-              <pre className="bg-black text-green-400 p-3 rounded-md overflow-x-auto"><code>vansh fill form</code></pre>
-              <p className="mt-2 text-sm">Or if you prefer using this dashboard interface, run <code>node start.js</code> in the EasyLife directory.</p>
-              <p className="mt-4 text-sm text-yellow-400">⚠️ <strong>Important:</strong> The automation uses your local Chrome profile. Ensure all Chrome windows are closed before triggering!</p>
-            </section>
+              <div>
+                <h3 className="text-xs text-orange-500 mb-3 tracking-widest flex items-center gap-2">
+                  <span className="text-neutral-600">02 /</span> DEPLOYMENT
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-[10px] text-neutral-400 mb-2">TARGET: WINDOWS/CMD</div>
+                    <CodeSnippet code={`git clone https://github.com/VANSH-THAPAR/EasyLife.git\ncd EasyLife\nnpm install\nnpm run install-os`} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-neutral-400 mb-2">TARGET: UNIX/ZSH</div>
+                    <CodeSnippet code={`git clone https://github.com/VANSH-THAPAR/EasyLife.git\ncd EasyLife\nnpm install\nnpm run install-os`} />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <button 
-          onClick={handleTrigger}
-          disabled={status === 'running'}
-          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white px-6 py-3 rounded-md font-medium transition-colors mb-8"
-        >
-          {status === 'running' ? 'Running Automation...' : 'Trigger Automation'}
-        </button>
+        <div className="lg:col-span-1">
+          <div className="border border-[#222] bg-[#0a0a0a] flex flex-col h-full sticky top-8">
+            <div className="bg-[#111] border-b border-[#222] p-3 flex justify-between items-center">
+              <span className="text-[10px] uppercase text-orange-500 tracking-widest font-bold">Terminal_Output</span>
+              <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+            </div>
+            
+            <div className="p-4 flex-1 h-[200px] overflow-y-auto bg-black text-[11px] leading-loose">
+              <div className="text-neutral-600 mb-2">&gt; AWAITING CMD...</div>
+              {log && (
+                <div className={status === 'error' ? 'text-red-500' : 'text-orange-400'}>
+                  <span className="mr-2 text-neutral-600">&gt;</span>{log}
+                </div>
+              )}
+            </div>
 
-        <div className="bg-black border border-neutral-800 rounded-xl p-6 font-mono text-sm h-64 overflow-y-auto">
-          <div className="text-neutral-500 mb-2">// Execution Logs</div>
-          <div className={status === 'error' ? 'text-red-400' : 'text-green-400'}>
-            {log || 'Awaiting execution...'}
+            <div className="p-4 border-t border-[#222] bg-[#050505]">
+              <button 
+                onClick={handleTrigger}
+                disabled={status === 'running'}
+                className="w-full bg-orange-500 text-black px-4 py-3 text-xs font-bold hover:bg-orange-400 disabled:opacity-50 disabled:bg-[#333] disabled:text-neutral-500 uppercase tracking-widest flex justify-center items-center gap-2 transition-colors active:scale-95"
+              >
+                {status === 'running' ? (
+                  <>PROCESSING...</>
+                ) : (
+                  <><Play size={14} fill="currentColor" /> EXECUTE</>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
