@@ -1,66 +1,67 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Cpu, TerminalSquare } from 'lucide-react';
+import { Hexagon, LayoutDashboard, TerminalSquare } from 'lucide-react';
 
 export default function Layout({ children }) {
   const location = useLocation();
 
   const navItems = [
-    { name: 'DASHBOARD.EXE', path: '/', icon: <Cpu size={16} /> },
-    { name: 'JOURNAL_BOT.SH', path: '/daily-journal', icon: <TerminalSquare size={16} /> },
+    { name: 'Overview', path: '/', icon: <LayoutDashboard size={18} /> },
+    { name: 'Daily Journal', path: '/daily-journal', icon: <TerminalSquare size={18} /> },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#000] text-neutral-300 font-mono selection:bg-orange-500/30 selection:text-orange-200 relative overflow-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-
-      <aside className="w-64 fixed inset-y-0 left-0 bg-[#050505] border-r border-[#222] flex flex-col z-20 shadow-[4px_0_24px_rgba(0,0,0,0.5)]">
-        <div className="p-6 border-b border-[#222]">
-          <Link to="/" className="text-xl font-bold tracking-tighter flex items-center gap-3 text-white hover:text-orange-500 transition-colors">
-            <div className="w-8 h-8 flex items-center justify-center border border-orange-500/50 bg-orange-500/10 text-orange-500">
-              <Cpu size={18} />
-            </div>
-            <div className="flex flex-col">
-              <span className="leading-none uppercase tracking-widest">EASY<span className="text-orange-500">LIFE</span></span>
-              <span className="text-[9px] text-neutral-600 tracking-[0.2em] mt-1">SYS_VER 1.0</span>
-            </div>
-          </Link>
-        </div>
-
-        <nav className="flex-1 px-4 space-y-2 mt-6">
-          <div className="text-[10px] text-neutral-600 uppercase tracking-widest px-2 mb-4">
-            // MODULES
+    <div className="min-h-screen bg-[#0a0a0a] text-zinc-300 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+      
+      {/* Floating Horizontal Navbar */}
+      <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-3rem)] max-w-6xl bg-[#0f0f11]/80 backdrop-blur-xl border border-zinc-800/80 rounded-2xl px-6 py-3 flex items-center justify-between shadow-2xl lg:px-8">
+        
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 text-white hover:opacity-80 transition-opacity">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+            <Hexagon size={22} fill="currentColor" fillOpacity={0.2} />
           </div>
+          <div className="hidden sm:flex flex-col">
+            <span className="leading-none text-zinc-100 font-bold text-lg">EasyLife</span>
+            <span className="text-[10px] text-emerald-500 font-mono tracking-[0.2em] mt-1 uppercase">v3.0.Core</span>
+          </div>
+        </Link>
+
+        {/* Center Nav Items */}
+        <nav className="flex items-center gap-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 text-xs transition-all duration-200 uppercase tracking-widest ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                   isActive
-                    ? 'bg-[#111] text-orange-500 border-l-2 border-orange-500'
-                    : 'text-neutral-500 hover:text-neutral-300 hover:bg-[#111] border-l-2 border-transparent'
+                    ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)]'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
                 }`}
               >
-                <span className={`opacity-80`}>{item.icon}</span>
-                {item.name}
+                <span className={isActive ? 'text-emerald-400' : 'text-zinc-500'}>{item.icon}</span>
+                <span className="hidden md:inline-block">{item.name}</span>
               </Link>
             )
           })}
         </nav>
         
-        <div className="p-4 border-t border-[#222] bg-[#020202]">
-          <div className="text-[10px] text-neutral-500 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-orange-500 animate-pulse"></span>
-              <span className="tracking-widest">NODE : ONLINE</span>
-            </div>
-            <span className="text-neutral-700">0ms</span>
+        {/* Right Status */}
+        <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#0a0a0a] border border-zinc-800/50 shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-xs text-zinc-400 tracking-wider font-mono">SYS_OPT</span>
           </div>
+          <span className="text-xs text-emerald-500/70 font-mono">12ms</span>
         </div>
-      </aside>
+      </header>
 
-      <main className="flex-1 ml-64 min-h-screen relative z-10">
+      {/* Main Content Area - Added padding-top to ensure it's not hidden behind the floating nav */}
+      <main className="relative z-10 p-6 pt-32 lg:p-12 lg:pt-36">
         {children}
       </main>
     </div>

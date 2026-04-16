@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Play, SquareTerminal, HardDrive, Network, Globe, Copy, Check } from 'lucide-react';
+import { Play, TerminalSquare, HardDrive, Network, Globe, Copy, Check, Fingerprint } from 'lucide-react';
 
-const CodeSnippet = ({ code, className = "" }) => {
+const CodeSnippet = ({ code }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -11,18 +11,18 @@ const CodeSnippet = ({ code, className = "" }) => {
   };
 
   return (
-    <div className={`relative group border border-[#333] bg-[#050505] ${className}`}>
-      <div className="flex justify-between items-center px-4 py-2 border-b border-[#222] bg-[#0a0a0a]">
-        <span className="text-[10px] uppercase text-neutral-500 tracking-widest">bash</span>
+    <div className="border border-zinc-800 rounded-lg bg-[#0a0a0a] overflow-hidden mt-2">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-zinc-800 bg-[#0f0f11] text-xs text-zinc-500">
+        <span className="font-mono">shell</span>
         <button 
           onClick={handleCopy}
-          className="text-neutral-500 hover:text-orange-500 transition-colors flex items-center gap-1 text-[10px] uppercase tracking-widest"
+          className="hover:text-zinc-300 transition-colors flex items-center gap-1.5"
         >
-          {copied ? <Check size={12} /> : <Copy size={12} />}
-          {copied ? 'COPIED' : 'COPY'}
+          {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+          {copied ? <span className="text-emerald-400">Copied</span> : 'Copy'}
         </button>
       </div>
-      <pre className="text-orange-400 p-4 overflow-x-auto text-[11px] leading-relaxed">
+      <pre className="text-zinc-300 p-4 font-mono text-sm overflow-x-auto">
         <code>{code}</code>
       </pre>
     </div>
@@ -35,7 +35,7 @@ export default function DailyJournalPage() {
 
   const handleTrigger = async () => {
     setStatus('running');
-    setLog(`[SYS] EXECUTING HEADLESS INJECTION...`);
+    setLog(`> [SYS] Init headless Chromium routine...\n> [SYS] Injecting headers...`);
 
     try {
       const response = await fetch('/api/trigger-journal', {
@@ -50,68 +50,77 @@ export default function DailyJournalPage() {
       const data = await response.json();
       if (response.ok) {
         setStatus('success');
-        setLog(`[OK] PAYLOAD DELIVERED. RES: ${data.message}`);
+        setLog(prev => prev + `\n> [OK] ${data.message}\n> [SYS] Connection terminated.`);
       } else {
-        throw new Error(data.message || 'PROCESS FAILED');
+        throw new Error(data.message || 'Process failed during execution.');
       }
     } catch (error) {
       setStatus('error');
-      setLog(`[ERR] ${error.message.toUpperCase()}`);
+      setLog(prev => prev + `\n> [ERR] ${error.message}\n> [SYS] Aborting.`);
     }
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto font-mono text-neutral-300">
-      <div className="mb-10 flex flex-col gap-2">
-        <h1 className="text-2xl font-bold text-white uppercase tracking-widest flex items-center gap-3">
-          <SquareTerminal className="text-orange-500" size={24} />
-          Daily_Journal.sh
-        </h1>
-        <p className="text-neutral-500 text-xs tracking-wide">
-          // AUTONOMOUS CHROMIUM INSTANCE :: FORM INJECTION MODULE
-        </p>
+    <div className="max-w-5xl mx-auto font-sans text-zinc-300">
+      <div className="mb-10 pb-6 border-b border-zinc-800">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+            <Fingerprint size={28} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black text-zinc-100 tracking-tight">
+              Daily Journal Injector
+            </h1>
+            <p className="text-zinc-400 text-sm mt-1 font-mono">
+              Target: Google Forms / Chromium Automated Payload
+            </p>
+          </div>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div className="lg:col-span-2 space-y-8">
-          <div className="border border-[#222] bg-[#050505] p-6 relative">
-            <div className="absolute top-0 left-0 bg-orange-500 text-black text-[9px] px-2 font-bold tracking-widest">DOCS</div>
+          <div className="bg-[#0f0f11] border border-zinc-800 rounded-2xl p-8">
             
-            <div className="mt-4 space-y-6">
+            <div className="space-y-10">
               <div>
-                <h3 className="text-xs text-orange-500 mb-3 tracking-widest flex items-center gap-2">
-                  <span className="text-neutral-600">01 /</span> REQUISITES
+                <h3 className="text-lg font-bold text-zinc-100 mb-4 flex items-center gap-2">
+                  <span className="text-emerald-500 font-mono text-sm">01 /</span> 
+                  Dependencies
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
-                    <Network size={14} className="text-neutral-500 mb-2" />
-                    <div className="text-xs text-white">Node.js</div>
-                    <div className="text-[10px] text-neutral-600">v18.0.0+</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-[#0a0a0a] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
+                    <Network size={20} className="text-zinc-500" />
+                    <div>
+                      <div className="text-sm font-bold text-zinc-300">Node.js</div>
+                      <div className="text-xs text-zinc-500 mt-1">v18.0.0+</div>
+                    </div>
                   </div>
-                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
-                    <Globe size={14} className="text-neutral-500 mb-2" />
-                    <div className="text-xs text-white">Chrome</div>
-                    <div className="text-[10px] text-neutral-600">Terminate bounds</div>
+                  <div className="bg-[#0a0a0a] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
+                    <Globe size={20} className="text-zinc-500" />
+                    <div>
+                      <div className="text-sm font-bold text-zinc-300">Chrome</div>
+                      <div className="text-xs text-zinc-500 mt-1">Kill process</div>
+                    </div>
                   </div>
-                  <div className="border border-[#111] bg-[#0a0a0a] p-3">
-                    <HardDrive size={14} className="text-neutral-500 mb-2" />
-                    <div className="text-xs text-white">Git</div>
-                    <div className="text-[10px] text-neutral-600">Source control</div>
+                  <div className="bg-[#0a0a0a] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
+                    <HardDrive size={20} className="text-zinc-500" />
+                    <div>
+                      <div className="text-sm font-bold text-zinc-300">Git CLI</div>
+                      <div className="text-xs text-zinc-500 mt-1">Required</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xs text-orange-500 mb-3 tracking-widest flex items-center gap-2">
-                  <span className="text-neutral-600">02 /</span> DEPLOYMENT
+                <h3 className="text-lg font-bold text-zinc-100 mb-4 flex items-center gap-2">
+                  <span className="text-emerald-500 font-mono text-sm">02 /</span> 
+                  Setup Routine
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <div className="text-[10px] text-neutral-400 mb-2">TARGET: WINDOWS/CMD</div>
-                    <CodeSnippet code={`git clone https://github.com/VANSH-THAPAR/EasyLife.git\ncd EasyLife\nnpm install\nnpm run install-os`} />
-                  </div>
-                  <div>
-                    <div className="text-[10px] text-neutral-400 mb-2">TARGET: UNIX/ZSH</div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">Windows (CMD / PowerShell)</div>
                     <CodeSnippet code={`git clone https://github.com/VANSH-THAPAR/EasyLife.git\ncd EasyLife\nnpm install\nnpm run install-os`} />
                   </div>
                 </div>
@@ -121,31 +130,38 @@ export default function DailyJournalPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="border border-[#222] bg-[#0a0a0a] flex flex-col h-full sticky top-8">
-            <div className="bg-[#111] border-b border-[#222] p-3 flex justify-between items-center">
-              <span className="text-[10px] uppercase text-orange-500 tracking-widest font-bold">Terminal_Output</span>
-              <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+          <div className="border border-zinc-800 rounded-2xl bg-[#0f0f11] flex flex-col overflow-hidden sticky top-8">
+            <div className="bg-zinc-900/50 border-b border-zinc-800 p-4 flex justify-between items-center">
+              <span className="text-xs font-mono font-bold text-zinc-400 flex items-center gap-2">
+                <TerminalSquare size={14} /> terminal_out
+              </span>
             </div>
             
-            <div className="p-4 flex-1 h-[200px] overflow-y-auto bg-black text-[11px] leading-loose">
-              <div className="text-neutral-600 mb-2">&gt; AWAITING CMD...</div>
+            <div className="p-5 flex-1 min-h-[250px] max-h-[350px] overflow-y-auto font-mono text-xs leading-loose bg-[#0a0a0a]">
+              <div className="text-zinc-600 mb-2">~ waiting for execution</div>
               {log && (
-                <div className={status === 'error' ? 'text-red-500' : 'text-orange-400'}>
-                  <span className="mr-2 text-neutral-600">&gt;</span>{log}
+                <div className={`whitespace-pre-wrap ${status === 'error' ? 'text-red-400' : status === 'success' ? 'text-emerald-400' : 'text-zinc-300'}`}>
+                  {log}
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-[#222] bg-[#050505]">
+            <div className="p-4 border-t border-zinc-800 bg-[#0f0f11]">
               <button 
                 onClick={handleTrigger}
                 disabled={status === 'running'}
-                className="w-full bg-orange-500 text-black px-4 py-3 text-xs font-bold hover:bg-orange-400 disabled:opacity-50 disabled:bg-[#333] disabled:text-neutral-500 uppercase tracking-widest flex justify-center items-center gap-2 transition-colors active:scale-95"
+                className="w-full bg-zinc-100 text-zinc-900 border border-transparent px-4 py-3 rounded-lg text-sm font-bold hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:border-zinc-700 flex justify-center items-center gap-2"
               >
                 {status === 'running' ? (
-                  <>PROCESSING...</>
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Compiling...
+                  </>
                 ) : (
-                  <><Play size={14} fill="currentColor" /> EXECUTE</>
+                  <><Play size={16} fill="currentColor" /> Run Script</>
                 )}
               </button>
             </div>

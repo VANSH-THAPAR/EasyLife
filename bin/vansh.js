@@ -7,7 +7,7 @@ const process = require('process');
 // Determine command
 const args = process.argv.slice(2).join(' ');
 
-if (args === 'fill form') {
+if (args === '' || args === 'fill form') {
   // We need to require the automate script from the correct relative path
   const automatePath = path.join(__dirname, '../DailyJournal/automate.js');
   const { submitDailyJournal } = require(automatePath);
@@ -40,7 +40,7 @@ else if (args === 'ui' || args === 'start') {
 else {
   console.log('\nEasyLife Automation Toolkit\n');
   console.log('Available Commands:');
-  console.log('  vansh fill form   - Runs the Google Form automation directly in the terminal');
+  console.log('  vansh             - Runs the Google Form automation directly in the terminal');
   console.log('  vansh ui          - Starts the local web dashboard');
   console.log('\n');
 }

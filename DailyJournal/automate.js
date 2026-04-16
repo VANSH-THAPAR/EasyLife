@@ -325,12 +325,15 @@ async function submitDailyJournal(formUrl, message) {
 
     console.log('Automation complete! Journal successfully submitted.');
     
-    // Leaving browser open for now to verify final status
+    // Close browser gracefully to ensure profile state/cookies are saved
+    await browser.close();
     return { success: true, message: 'Automation complete! Journal successfully submitted.' };
   } catch (error) {
     console.error('Automation error:', error);
-    // Even if it fails, leaving the browser open is helpful to debug visually
-    // await browser.close();
+    // Graceful close on error as well
+    if (browser) {
+      await browser.close();
+    }
     throw error;
   }
 }
