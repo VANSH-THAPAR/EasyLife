@@ -133,11 +133,15 @@ export default function DailyJournalPage() {
                 </h3>
                 <div className="space-y-5">
                   <div>
-                    <div className="text-sm font-medium text-zinc-400 mb-2">Schedule task to run Daily at 10:15 AM (CMD / PowerShell)</div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">1. Create C:\Users\LENOVO\vansh.bat and paste this:</div>
+                    <CodeSnippet code={`@echo off\n"C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\LENOVO\\EasyLife\\bin\\vansh.js" %*`} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">2. Schedule task to run Daily at 10:15 AM (CMD / PowerShell)</div>
                     <CodeSnippet code={`schtasks /create /tn "VanshTask" /sc daily /st 10:15 /tr "C:\\Users\\LENOVO\\vansh.bat fill form" /rl HIGHEST /f`} />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-zinc-400 mb-2">Trigger your scheduled task instantly right now</div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">3. Trigger your scheduled task instantly right now</div>
                     <CodeSnippet code={`schtasks /run /tn "VanshTask"`} />
                   </div>
                 </div>
