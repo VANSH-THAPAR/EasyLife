@@ -80,10 +80,12 @@ vansh fill form
 ### Automate Daily via Windows Task Scheduler (Windows Only)
 
 **Step 1: Create the Batch File**
-First, create a file named `vansh.bat` in your `C:\Users\LENOVO` directory. Open it in a text editor like Notepad and paste the following content:
+1. Navigate to your user folder: `C:\Users\LENOVO`
+2. Create a new text file and name it `vansh.bat` (make sure it doesn't end in `.txt`).
+3. Open `vansh.bat` in Notepad, paste the following content, and Save:
 ```bat
 @echo off
-"C:\Program Files\nodejs\node.exe" "C:\Users\LENOVO\EasyLife\bin\vansh.js" %*
+node "C:\Users\LENOVO\EasyLife\bin\vansh.js" %*
 ```
 
 **Step 2: Setup the Task Scheduler**

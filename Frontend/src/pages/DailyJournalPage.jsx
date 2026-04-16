@@ -133,8 +133,8 @@ export default function DailyJournalPage() {
                 </h3>
                 <div className="space-y-5">
                   <div>
-                    <div className="text-sm font-medium text-zinc-400 mb-2">1. Create C:\Users\LENOVO\vansh.bat and paste this:</div>
-                    <CodeSnippet code={`@echo off\n"C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\LENOVO\\EasyLife\\bin\\vansh.js" %*`} />
+                    <div className="text-sm font-medium text-zinc-400 mb-2">1. Create a new file <code className="text-emerald-400 bg-zinc-900 border border-zinc-800 rounded px-1 py-0.5">C:\Users\LENOVO\vansh.bat</code> using Notepad and paste this:</div>
+                    <CodeSnippet code={`@echo off\nnode "C:\\Users\\LENOVO\\EasyLife\\bin\\vansh.js" %*`} />
                   </div>
                   <div>
                     <div className="text-sm font-medium text-zinc-400 mb-2">2. Schedule task to run Daily at 10:15 AM (CMD / PowerShell)</div>
