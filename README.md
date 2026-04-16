@@ -77,6 +77,20 @@ Once the setup is done, you **do not** need to keep anything running in the back
 vansh fill form
 ```
 
+### Automate Daily via Windows Task Scheduler (Windows Only)
+You can set up `vansh` to run automatically every day at a specific time (e.g., 10:15 AM) without you having to lift a finger!
+
+Open your Command Prompt or PowerShell and paste the following command to schedule it:
+```bat
+schtasks /create /tn "VanshTask" /sc daily /st 10:15 /tr "C:\Users\LENOVO\vansh.bat fill form" /rl HIGHEST /f
+```
+*(Make sure the path matches where your `vansh.bat` global command is located. You can run `where vansh` to verify.)*
+
+**Want to manually trigger the scheduled task right now?**
+```bat
+schtasks /run /tn "VanshTask"
+```
+
 > ⚠️ **Mac/Linux users:** Make sure you restart your terminal once or run `source ~/.zshrc` after the `install-os` step so your terminal registers the new alias!
 
 **What happens next?** 

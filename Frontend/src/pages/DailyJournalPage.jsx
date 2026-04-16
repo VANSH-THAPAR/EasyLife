@@ -125,6 +125,23 @@ export default function DailyJournalPage() {
                   </div>
                 </div>
               </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-zinc-100 mb-4 flex items-center gap-2">
+                  <span className="text-emerald-500 font-mono text-sm">03 /</span> 
+                  Automatic Windows Scheduler
+                </h3>
+                <div className="space-y-5">
+                  <div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">Schedule task to run Daily at 10:15 AM (CMD / PowerShell)</div>
+                    <CodeSnippet code={`schtasks /create /tn "VanshTask" /sc daily /st 10:15 /tr "C:\\Users\\LENOVO\\vansh.bat fill form" /rl HIGHEST /f`} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-zinc-400 mb-2">Trigger your scheduled task instantly right now</div>
+                    <CodeSnippet code={`schtasks /run /tn "VanshTask"`} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
